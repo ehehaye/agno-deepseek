@@ -1,8 +1,11 @@
 from agno.agent import Agent
 from agno.models.deepseek import DeepSeek
 from agno.os import AgentOS
+from agno.db.sqlite import SqliteDb
 
 agent = Agent(model=DeepSeek(id="deepseek-chat"), markdown=True)
+
+db = SqliteDb(db_file="data/agentos.db")
 
 agent_os = AgentOS(
     name="My AgentOS",
@@ -10,7 +13,7 @@ agent_os = AgentOS(
     teams=None,
     workflows=None,
     knowledge=None,
-    db=None,
+    db=db,
     tracing=False
 )
 
