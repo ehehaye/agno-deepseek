@@ -3,7 +3,12 @@ from agno.models.deepseek import DeepSeek
 from agno.os import AgentOS
 from agno.db.sqlite import SqliteDb
 
-agent = Agent(model=DeepSeek(id="deepseek-chat"), markdown=True)
+agent = Agent(
+    model=DeepSeek(id="deepseek-chat"),
+    reasoning=True,          # enable reasoning capabilities
+    reasoning_max_steps=5,   # optional: set maximum reasoning steps
+    markdown=True,
+)
 
 db = SqliteDb(db_file="data/agentos.db")
 
