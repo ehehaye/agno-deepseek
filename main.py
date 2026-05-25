@@ -3,10 +3,19 @@ from agno.team import Team
 from agno.models.deepseek import DeepSeek
 from agno.os import AgentOS
 from agno.db.sqlite import SqliteDb
+from agno.approval import approval
+from agno.tools import tool
+
+@approval
+@tool(requires_confirmation=True)
+def delete_user_data(user_id: str) -> str:
+    """Permanently delete all data for a user. Requires admin approval."""
+    return f"All data for user {user_id} has been deleted."
 
 basicAgent = Agent(
     name="basic agent",
     model=DeepSeek(id="deepseek-chat"),
+    tools=[delete_user_data],
     markdown=True,
 )
 
@@ -22,7 +31,7 @@ team = Team(
     name="My Team",
     description="A team of agents working together",
     model=DeepSeek(id="deepseek-chat"),
-    members=[reasonAgent, basicAgent],
+    members=[basicAgent, reasonAgent],
     markdown=True,
 )
 
@@ -30,7 +39,7 @@ db = SqliteDb(db_file="data/agentos.db")
 
 agent_os = AgentOS(
     name="My AgentOS",
-    agents=[reasonAgent, basicAgent],
+    agents=[basicAgent, reasonAgent],
     teams=[team],
     workflows=None,
     knowledge=None,
