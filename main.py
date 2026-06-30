@@ -5,6 +5,7 @@ from agno.os import AgentOS
 from agno.db.sqlite import SqliteDb
 from agno.approval import approval
 from agno.tools import tool
+from agno.os.interfaces.agui import AGUI
 
 @approval
 @tool(requires_confirmation=True)
@@ -41,6 +42,7 @@ agent_os = AgentOS(
     name="My AgentOS",
     agents=[basicAgent, reasonAgent],
     teams=[team],
+    interfaces=[AGUI(agent=reasonAgent)],
     workflows=None,
     knowledge=None,
     db=db,
