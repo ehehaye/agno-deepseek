@@ -45,7 +45,11 @@ agent_os = AgentOS(
     name="My AgentOS",
     agents=[basicAgent, reasonAgent],
     teams=[team],
-    interfaces=[AGUI(agent=reasonAgent)],
+    interfaces=[
+        AGUI(agent=reasonAgent, prefix = "/endpoint/reason"),
+        AGUI(agent=basicAgent, prefix = "/endpoint/basic"),
+        AGUI(agent=team, prefix = "/endpoint/team"),
+    ],
     workflows=None,
     knowledge=None,
     db=db,
