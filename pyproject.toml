@@ -13,4 +13,5 @@ dependencies = [
     "sqlalchemy>=2.0.0",
     "aiosqlite>=0.20.0",
     "websockets>=16.0",
+    "ag-ui-protocol>=0.1.19",
 ]
