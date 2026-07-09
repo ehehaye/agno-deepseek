@@ -5,6 +5,7 @@ from agno.os import AgentOS
 from agno.db.sqlite import SqliteDb
 from agno.approval import approval
 from agno.tools import tool
+from db import *
 
 @approval
 @tool(requires_confirmation=True)
@@ -17,6 +18,8 @@ basicAgent = Agent(
     model=DeepSeek(id="deepseek-chat"),
     tools=[delete_user_data],
     markdown=True,
+    update_memory_on_run=True,
+    add_history_to_context=True,
 )
 
 reasonAgent = Agent(
@@ -25,6 +28,8 @@ reasonAgent = Agent(
     reasoning=True,          # enable reasoning capabilities
     reasoning_max_steps=5,   # optional: set maximum reasoning steps
     markdown=True,
+    update_memory_on_run=True,
+    add_history_to_context=True,
 )
 
 team = Team(
@@ -34,8 +39,6 @@ team = Team(
     members=[basicAgent, reasonAgent],
     markdown=True,
 )
-
-db = SqliteDb(db_file="data/agentos.db")
 
 agent_os = AgentOS(
     name="My AgentOS",
