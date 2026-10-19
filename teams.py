@@ -3,7 +3,8 @@
 from agno.team import Team, TeamMode
 
 from agents import basicAgent, billingAgent, reasonAgent, techAgent
-from config import chatModel, db
+from config import chatModel
+from db import db
 
 # coordinate (default): leader delegates work and synthesizes the final answer.
 team = Team(

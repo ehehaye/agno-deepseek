@@ -6,7 +6,8 @@ from agno.agent import Agent
 from agno.memory import MemoryManager
 from agno.models.deepseek import DeepSeek
 
-from config import chatModel, db
+from config import chatModel
+from db import db
 from tools import (
     calculator,
     delete_user_data,
@@ -31,6 +32,7 @@ basicAgent = Agent(
     ],
     tools=[calculator, runbookReader, delete_user_data, escalate_to_human, deploy_release],
     db=db,
+    update_memory_on_run=True,
     add_history_to_context=True,
     num_history_runs=5,
     add_datetime_to_context=True,
@@ -55,9 +57,12 @@ memoryAgent = Agent(
 reasonAgent = Agent(
     name="reason agent",
     model=DeepSeek(id="deepseek-v4-flash"),
+    reasoning=True,
     reasoning_model=DeepSeek(id="deepseek-v4-flash"),  # manual COT by default
     reasoning_max_steps=5,
     db=db,
+    update_memory_on_run=True,
+    add_history_to_context=True,
     markdown=True,
 )
 

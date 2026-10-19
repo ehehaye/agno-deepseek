@@ -5,7 +5,7 @@ Demo project wiring the [Agno](https://docs.agno.com) agent framework to the Dee
 ## Project
 
 - Python >= 3.14 (`.python-version` = `3.14`), dependencies managed with **uv**.
-- Flat top-level modules (not a package): `config.py`, `tools.py`, `agents.py`, `teams.py`, `workflows.py`, `main.py`.
+- Flat top-level modules (not a package): `config.py`, `db.py`, `tools.py`, `agents.py`, `teams.py`, `workflows.py`, `main.py`.
 - `src/hitl/` is an empty placeholder directory; `scripts/init.sh` recreates the venv from scratch.
 
 ## Commands
@@ -21,14 +21,16 @@ No test suite, linter, or formatter is configured — do not invent test/lint co
 
 ## Architecture
 
-One-way import direction: `config` / `tools` → `agents` → `teams` / `workflows` → `main`.
+One-way import direction: `config` / `db` / `tools` → `agents` → `teams` / `workflows` → `main`.
 
-- `config.py` — `chatModel()` returns a fresh `DeepSeek(id="deepseek-chat")` per agent; `db` is the shared `SqliteDb(db_file="data/agentos.db")` (gitignored via `data/*`).
+- `config.py` — `chatModel()` returns a fresh `DeepSeek(id="deepseek-chat")` per agent.
+- `db.py` — shared `db = SqliteDb(db_file="data/agentos.db")` (gitignored via `data/*`).
 - `tools.py` — `calculator`, read-only `runbookReader` (`FileTools(base_dir="data")`), plus three HITL tools: `delete_user_data` (confirmation + `@approval`), `escalate_to_human` (`requires_user_input`), `deploy_release` (`external_execution`).
 - `agents.py` — standalone agents (`basicAgent`, `memoryAgent` with `MemoryManager`, `reasonAgent`, `structuredAgent` with `output_schema=ActionPlan`), pipeline agents (`researcherAgent`, `writerAgent`, `criticAgent`), and routing specialists (`billingAgent`, `techAgent`).
 - `teams.py` — `team` (coordinate, basic + reason agents, used by `AGUI`) and `supportTeam` (`TeamMode.route`, billing/technical specialists).
 - `workflows.py` — `researchPipeline` (`Step`, `Parallel`, `Condition`, `Loop`, step-level `HumanReview`, custom executor steps) and `supportRouterWorkflow` (`Router`).
-- `main.py` — `AgentOS(agents=..., teams=..., workflows=..., interfaces=[AGUI(team=team)], db=db)`, `app = agent_os.get_app()`, server entry point.
+- `main.py` — `AgentOS(agents=..., teams=..., workflows=..., interfaces=[...], db=db)`, `app = agent_os.get_app()`, server entry point.
+- `AGUI` interfaces are mounted at `/endpoint/reason`, `/endpoint/basic`, and `/endpoint/team`.
 
 Implementation notes:
 - Team `mode` must be a `TeamMode` enum (e.g. `TeamMode.route`): AgentOS serializes it via `mode.value`, so a plain string breaks `GET /teams`.

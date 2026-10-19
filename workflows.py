@@ -14,7 +14,7 @@ from agno.workflow import (
 )
 
 from agents import billingAgent, criticAgent, researcherAgent, techAgent, writerAgent
-from config import db
+from db import db
 
 
 def inputMentionsRisk(step_input: StepInput) -> bool:
